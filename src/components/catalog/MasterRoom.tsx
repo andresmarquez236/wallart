@@ -28,7 +28,7 @@ export function MasterRoom({ categories, activeCategoryId, activeArtworkId }: Ma
   }, [activeCategoryId, activeCategory.id]);
 
   const renderSlices = (imageUrl: string, format: FormatType) => {
-    let slices = [];
+    let slices: Array<{ width: string; height: string; bgPos: string }> = [];
     if (format === "one-piece") {
       slices = [{ width: "w-full", height: "h-full", bgPos: "center" }];
     } else if (format === "triptych") {

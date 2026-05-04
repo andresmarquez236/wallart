@@ -13,20 +13,25 @@ const DEMO_IMAGES = [
 ];
 let demoIdx = 0;
 
-const openai = DEMO_MODE ? null : new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
 export async function POST(req: NextRequest) {
-  const { prompt } = await req.json();
+  try {
+    const { prompt } = await req.json();
 
-  // ── Demo Mode ────────────────────────────────────────────────────────────
-  if (DEMO_MODE) {
-    await new Promise(r => setTimeout(r, 1800)); // Simulate generation delay
-    const mockUrl = DEMO_IMAGES[demoIdx % DEMO_IMAGES.length];
-    demoIdx++;
-    // Return an absolute URL the client can use as img src
-    const baseUrl = req.nextUrl.origin;
-    return NextResponse.json({ url: `${baseUrl}${mockUrl}`, demo: true });
-  }
+    // ── Demo Mode ──────────────────────────────────────────────────────────
+    if (DEMO_MODE) {
+      await new Promise(r => setTimeout(r, 1800)); // Simulate generation delay
+      const mockUrl = DEMO_IMAGES[demoIdx % DEMO_IMAGES.length];
+      demoIdx++;
+      // Return an absolute URL the client can use as img src
+      const baseUrl = req.nextUrl.origin;
+      return NextResponse.json({ url: `${baseUrl}${mockUrl}`, demo: true });
+    }
+
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json({ error: "OPENAI_API_KEY no configurada" }, { status: 500 });
+    }
+    const openai = new OpenAI({ apiKey });
 
     if (!prompt || typeof prompt !== "string") {
       return NextResponse.json({ error: "Prompt requerido" }, { status: 400 });
@@ -50,7 +55,7 @@ export async function POST(req: NextRequest) {
       style: "vivid",
     });
 
-    const imageUrl = response.data[0]?.url;
+    const imageUrl = response.data?.[0]?.url;
     if (!imageUrl) {
       return NextResponse.json({ error: "No se pudo generar la imagen" }, { status: 500 });
     }

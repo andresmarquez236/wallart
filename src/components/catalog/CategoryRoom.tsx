@@ -51,7 +51,7 @@ export function CategoryRoom({ category, isActive }: CategoryRoomProps) {
 
   // Helper to render the sliced art based on format
   const renderSlices = (imageUrl: string, format: FormatType) => {
-    let slices = [];
+    let slices: Array<{ width: string; height: string; bgPos: string }> = [];
     if (format === "one-piece") {
       slices = [{ width: "w-full", height: "h-full", bgPos: "center" }];
     } else if (format === "triptych") {
