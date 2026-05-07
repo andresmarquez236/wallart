@@ -48,7 +48,7 @@ export function Transformation() {
   return (
     <section 
       ref={container}
-      className="relative h-screen w-full bg-[#0a0a0a] overflow-hidden flex items-center justify-center"
+      className="relative h-screen w-full bg-background overflow-hidden flex items-center justify-center"
     >
       {/* Wall Image */}
       <div className="absolute inset-0">
@@ -105,10 +105,10 @@ export function Transformation() {
           ref={textContainerRef}
           className="absolute -bottom-28 md:-bottom-36 left-0 right-0 text-center opacity-0 translate-y-8 z-30"
         >
-          <h3 className="text-2xl md:text-4xl font-serif text-white tracking-wide">
-            Donde había vacío, ahora hay <span className="italic text-white/70">profundidad</span>.
+          <h3 className="text-2xl md:text-4xl font-serif text-foreground tracking-wide">
+            Donde había vacío, ahora hay <span className="italic text-[color:var(--foreground-soft)]">profundidad</span>.
           </h3>
-          <p className="mt-4 md:mt-6 text-white/50 text-[0.7rem] md:text-sm font-light tracking-[0.3em] uppercase">
+          <p className="mt-4 md:mt-6 text-[color:var(--muted)] text-[0.7rem] md:text-sm font-light tracking-[0.3em] uppercase">
             Cada panel redefine lo invisible
           </p>
         </div>

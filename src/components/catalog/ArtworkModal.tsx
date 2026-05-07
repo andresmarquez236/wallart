@@ -26,9 +26,10 @@ const BACKGROUNDS = [
   "/assets/fondo_4.png",
 ];
 
-const FINISHES = ["Mate", "Mate + Textura", "Brillo Ultra HD"];
+const FINISHES = ["Mate", "Mate + Textura", "Brillo Ultra HD"] as const;
+type Finish = (typeof FINISHES)[number];
 
-const SIZES_BY_FORMAT: Record<string, string[]> = {
+const SIZES_BY_FORMAT: Record<FormatType, string[]> = {
   "one-piece":  ["40×60 cm", "60×90 cm", "80×120 cm"],
   "triptych":   ["90×60 cm total", "120×80 cm total", "150×100 cm total"],
   "five-piece": ["120×60 cm total", "180×80 cm total", "200×100 cm total"],
@@ -42,13 +43,13 @@ function PillSelector<T extends string>({
   onSelect,
 }: {
   label: string;
-  options: T[];
+  options: readonly T[];
   selected: T;
   onSelect: (v: T) => void;
 }) {
   return (
     <div className="mb-6">
-      <p className="font-mono text-[0.55rem] tracking-[0.3em] uppercase text-white/40 mb-3">{label}</p>
+      <p className="font-mono text-[0.55rem] tracking-[0.3em] uppercase text-[color:var(--muted)] mb-3">{label}</p>
       <div className="flex flex-wrap gap-2">
         {options.map((opt) => (
           <button
@@ -57,8 +58,8 @@ function PillSelector<T extends string>({
             className={cn(
               "px-4 py-2 rounded-full border text-xs font-light tracking-wide transition-all duration-200",
               selected === opt
-                ? "border-white text-white bg-white/10"
-                : "border-white/20 text-white/50 hover:border-white/50 hover:text-white/80"
+                ? "border-foreground text-foreground bg-foreground/10"
+                : "border-[color:var(--border)] text-[color:var(--muted)] hover:border-foreground/50 hover:text-foreground/80"
             )}
           >
             {opt}
@@ -72,17 +73,17 @@ function PillSelector<T extends string>({
 // ─── Quantity Stepper ─────────────────────────────────────────────────────────
 function QuantityStepper({ value, onChange }: { value: number; onChange: (v: number) => void }) {
   return (
-    <div className="flex items-center gap-0 rounded-full border border-white/25 overflow-hidden w-fit">
+    <div className="flex items-center gap-0 rounded-full border border-[color:var(--border)] overflow-hidden w-fit">
       <button
         onClick={() => onChange(Math.max(1, value - 1))}
-        className="w-10 h-10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/5 transition-all"
+        className="w-10 h-10 flex items-center justify-center text-[color:var(--foreground-soft)] hover:text-foreground hover:bg-foreground/5 transition-all"
       >
         <Minus className="w-3 h-3" />
       </button>
-      <span className="w-10 text-center text-sm font-light text-white select-none">{value}</span>
+      <span className="w-10 text-center text-sm font-light text-foreground select-none">{value}</span>
       <button
         onClick={() => onChange(value + 1)}
-        className="w-10 h-10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/5 transition-all"
+        className="w-10 h-10 flex items-center justify-center text-[color:var(--foreground-soft)] hover:text-foreground hover:bg-foreground/5 transition-all"
       >
         <Plus className="w-3 h-3" />
       </button>
@@ -94,19 +95,19 @@ function QuantityStepper({ value, onChange }: { value: number; onChange: (v: num
 function Accordion({ title, children }: { title: string; children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="border-b border-white/10">
+    <div className="border-b border-[color:var(--border)]">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full py-5 flex justify-between items-center text-left hover:text-white/80 transition-colors"
+        className="w-full py-5 flex justify-between items-center text-left hover:text-foreground/80 transition-colors"
       >
-        <span className="font-mono text-[0.65rem] tracking-widest uppercase text-white/60">{title}</span>
-        <ChevronDown className={cn("w-4 h-4 transition-transform duration-300 text-white/40", isOpen ? "rotate-180" : "rotate-0")} />
+        <span className="font-mono text-[0.65rem] tracking-widest uppercase text-[color:var(--foreground-soft)]">{title}</span>
+        <ChevronDown className={cn("w-4 h-4 transition-transform duration-300 text-[color:var(--muted)]", isOpen ? "rotate-180" : "rotate-0")} />
       </button>
       <div className={cn(
         "overflow-hidden transition-all duration-300 ease-in-out",
         isOpen ? "max-h-96 opacity-100 pb-5" : "max-h-0 opacity-0"
       )}>
-        <div className="text-white/60 font-light text-sm leading-relaxed">{children}</div>
+        <div className="text-[color:var(--foreground-soft)] font-light text-sm leading-relaxed">{children}</div>
       </div>
     </div>
   );
@@ -114,28 +115,23 @@ function Accordion({ title, children }: { title: string; children: React.ReactNo
 
 // ─── Main Modal ───────────────────────────────────────────────────────────────
 export function ArtworkModal({ isOpen, onClose, category, artwork, onNext, onPrev }: ArtworkModalProps) {
-  const [mounted, setMounted] = useState(false);
   const [activeBg, setActiveBg] = useState(BACKGROUNDS[0]);
-  const [finish, setFinish] = useState(FINISHES[0]);
-  const [size, setSize] = useState(() => SIZES_BY_FORMAT[category.id]?.[1] ?? SIZES_BY_FORMAT["one-piece"][1]);
+  const [finish, setFinish] = useState<Finish>(FINISHES[0]);
+  const [sizeByFormat, setSizeByFormat] = useState<Partial<Record<FormatType, string>>>({});
   const [quantity, setQuantity] = useState(1);
+  const size = sizeByFormat[category.id] ?? SIZES_BY_FORMAT[category.id][1];
+  const setSize = (nextSize: string) => {
+    setSizeByFormat((current) => ({ ...current, [category.id]: nextSize }));
+  };
 
-  // Keep size in sync when artwork/category changes
   useEffect(() => {
-    setSize(SIZES_BY_FORMAT[category.id]?.[1] ?? SIZES_BY_FORMAT["one-piece"][1]);
-  }, [category.id]);
-
-  useEffect(() => {
-    if (isOpen) {
-      setMounted(true);
-      document.body.style.overflow = "hidden";
-    } else {
-      setTimeout(() => setMounted(false), 500);
+    document.body.style.overflow = isOpen ? "hidden" : "auto";
+    return () => {
       document.body.style.overflow = "auto";
-    }
+    };
   }, [isOpen]);
 
-  if (!mounted && !isOpen) return null;
+  if (!isOpen) return null;
 
   const renderSlices = (imageUrl: string, format: FormatType) => {
     const slices =
@@ -185,12 +181,12 @@ export function ArtworkModal({ isOpen, onClose, category, artwork, onNext, onPre
   return (
     <div
       className={cn(
-        "fixed inset-0 z-50 flex flex-col lg:flex-row bg-[#050505] transition-opacity duration-500",
+        "fixed inset-0 z-50 flex flex-col lg:flex-row bg-background transition-opacity duration-500",
         isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
       )}
     >
       {/* ── LEFT: Room View ───────────────────────────────────────────────── */}
-      <div className="relative w-full lg:w-[60%] h-[45vh] lg:h-full bg-black overflow-hidden flex-shrink-0 group">
+      <div className="relative w-full lg:w-[60%] h-[45vh] lg:h-full bg-[color:var(--surface)] overflow-hidden flex-shrink-0 group">
 
         {/* Background crossfade */}
         <div className="absolute inset-0 z-0">
@@ -202,10 +198,10 @@ export function ArtworkModal({ isOpen, onClose, category, artwork, onNext, onPre
         </div>
 
         {/* Navigation arrows */}
-        <button onClick={onPrev} className="absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 z-50 p-3 bg-black/20 backdrop-blur-md rounded-full text-white/70 hover:text-white hover:bg-black/50 transition-all">
+        <button onClick={onPrev} className="absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 z-50 p-3 bg-[color:var(--overlay-soft)] backdrop-blur-md rounded-full text-[color:var(--foreground-soft)] hover:text-foreground hover:bg-[color:var(--surface)]/50 transition-all">
           <ChevronLeft className="w-6 h-6" />
         </button>
-        <button onClick={onNext} className="absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 z-50 p-3 bg-black/20 backdrop-blur-md rounded-full text-white/70 hover:text-white hover:bg-black/50 transition-all">
+        <button onClick={onNext} className="absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 z-50 p-3 bg-[color:var(--overlay-soft)] backdrop-blur-md rounded-full text-[color:var(--foreground-soft)] hover:text-foreground hover:bg-[color:var(--surface)]/50 transition-all">
           <ChevronRight className="w-6 h-6" />
         </button>
 
@@ -219,11 +215,11 @@ export function ArtworkModal({ isOpen, onClose, category, artwork, onNext, onPre
         </div>
 
         {/* BG Thumbnail Switcher */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-40 flex gap-3 p-3 bg-black/40 backdrop-blur-md rounded-full border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-40 flex gap-3 p-3 bg-[color:var(--overlay-strong)] backdrop-blur-md rounded-full border border-[color:var(--border)] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           {BACKGROUNDS.map((bg) => (
             <button key={bg} onClick={() => setActiveBg(bg)}
               className={cn("relative w-10 h-10 rounded-full overflow-hidden border-2 transition-all duration-300",
-                activeBg === bg ? "border-white scale-110" : "border-transparent opacity-60 hover:opacity-100"
+                activeBg === bg ? "border-foreground scale-110" : "border-transparent opacity-60 hover:opacity-100"
               )}>
               <Image src={bg} alt="Fondo" fill className="object-cover" />
             </button>
@@ -232,33 +228,33 @@ export function ArtworkModal({ isOpen, onClose, category, artwork, onNext, onPre
       </div>
 
       {/* ── RIGHT: E-Commerce Panel ───────────────────────────────────────── */}
-      <div className="relative w-full lg:w-[40%] h-[55vh] lg:h-full overflow-y-auto bg-[#0a0a0a] border-l border-white/10 p-8 lg:p-14 flex flex-col justify-start custom-scrollbar">
+      <div className="relative w-full lg:w-[40%] h-[55vh] lg:h-full overflow-y-auto bg-[color:var(--surface)] border-l border-[color:var(--border)] p-8 lg:p-14 flex flex-col justify-start custom-scrollbar">
 
         {/* Close */}
-        <button onClick={onClose} className="absolute top-6 right-6 lg:top-8 lg:right-8 p-2 text-white/40 hover:text-white transition-colors z-50">
+        <button onClick={onClose} className="absolute top-6 right-6 lg:top-8 lg:right-8 p-2 text-[color:var(--muted)] hover:text-foreground transition-colors z-50">
           <X className="w-5 h-5" />
         </button>
 
         {/* Header */}
         <div className="mt-4 lg:mt-10 mb-8">
-          <h4 className="font-mono text-[0.6rem] tracking-[0.3em] uppercase text-white/40 mb-3">{category.title}</h4>
-          <h1 className="text-4xl lg:text-5xl font-serif text-white leading-tight mb-3">{artwork.title}</h1>
-          <p className="text-3xl font-light text-white">${artwork.price}</p>
+          <h4 className="font-mono text-[0.6rem] tracking-[0.3em] uppercase text-[color:var(--muted)] mb-3">{category.title}</h4>
+          <h1 className="text-4xl lg:text-5xl font-serif text-foreground leading-tight mb-3">{artwork.title}</h1>
+          <p className="text-3xl font-light text-foreground">${artwork.price}</p>
         </div>
 
         {/* ── Pill Selectors ── */}
-        <PillSelector label="¿Qué acabado prefieres?" options={FINISHES as any} selected={finish} onSelect={setFinish as any} />
-        <PillSelector label="Tamaño" options={SIZES_BY_FORMAT[category.id] as any} selected={size} onSelect={setSize as any} />
+        <PillSelector label="¿Qué acabado prefieres?" options={FINISHES} selected={finish} onSelect={setFinish} />
+        <PillSelector label="Tamaño" options={SIZES_BY_FORMAT[category.id]} selected={size} onSelect={setSize} />
 
         {/* ── Quantity + CTAs ── */}
-        <div className="border-t border-white/10 pt-6 mb-8 flex flex-col gap-4">
+        <div className="border-t border-[color:var(--border)] pt-6 mb-8 flex flex-col gap-4">
           <div className="flex items-center gap-4">
             <QuantityStepper value={quantity} onChange={setQuantity} />
-            <button className="flex-1 flex items-center justify-center gap-2 border border-white/30 text-white py-[0.6rem] text-xs font-mono tracking-widest uppercase hover:border-white hover:bg-white/5 transition-all rounded-full">
+            <button className="flex-1 flex items-center justify-center gap-2 border border-[color:var(--border-strong)] text-foreground py-[0.6rem] text-xs font-mono tracking-widest uppercase hover:border-foreground hover:bg-foreground/5 transition-all rounded-full">
               <ShoppingCart className="w-3.5 h-3.5" /> Añadir al carrito
             </button>
           </div>
-          <button className="w-full bg-white text-black py-[0.9rem] text-xs font-bold tracking-[0.2em] uppercase hover:bg-white/90 transition-colors rounded-full">
+          <button className="w-full bg-foreground text-background py-[0.9rem] text-xs font-bold tracking-[0.2em] uppercase hover:bg-foreground/90 transition-colors rounded-full">
             Comprar ahora
           </button>
         </div>
@@ -266,19 +262,19 @@ export function ArtworkModal({ isOpen, onClose, category, artwork, onNext, onPre
         {/* ── 3 Benefits ── */}
         <div className="grid grid-cols-1 gap-3 mb-10">
           {[
-            { icon: <Gem className="w-4 h-4 text-white/50" />, text: "Impresión Giclée + Acrílico Ultra Brillo 3D" },
-            { icon: <Truck className="w-4 h-4 text-white/50" />, text: "Envío asegurado gratis a todo el país" },
-            { icon: <ShieldCheck className="w-4 h-4 text-white/50" />, text: "Sin marco · listo para colgar · garantía vitalicia" },
+            { icon: <Gem className="w-4 h-4 text-[color:var(--muted)]" />, text: "Impresión Giclée + Acrílico Ultra Brillo 3D" },
+            { icon: <Truck className="w-4 h-4 text-[color:var(--muted)]" />, text: "Envío asegurado gratis a todo el país" },
+            { icon: <ShieldCheck className="w-4 h-4 text-[color:var(--muted)]" />, text: "Sin marco · listo para colgar · garantía vitalicia" },
           ].map(({ icon, text }) => (
             <div key={text} className="flex items-center gap-3">
               {icon}
-              <p className="text-xs font-light text-white/60">{text}</p>
+              <p className="text-xs font-light text-[color:var(--foreground-soft)]">{text}</p>
             </div>
           ))}
         </div>
 
         {/* ── Accordions ── */}
-        <div className="border-t border-white/10">
+        <div className="border-t border-[color:var(--border)]">
           <Accordion title="Descripción de la Obra">
             {artwork.description} Esta pieza exclusiva forma parte de nuestro catálogo de edición limitada, diseñada para elevar espacios modernos con su estética de alto contraste.
           </Accordion>

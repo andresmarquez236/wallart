@@ -23,6 +23,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   function apply(t: Theme) {
     setTheme(t);
     document.documentElement.setAttribute("data-theme", t);
+    document.documentElement.style.colorScheme = t;
     localStorage.setItem("was-theme", t);
   }
 

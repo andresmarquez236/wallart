@@ -18,11 +18,11 @@ function ImmersiveNav({ backHref = "/", backLabel = "Volver" }: { backHref?: str
     <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-5 pointer-events-none">
       <Link
         href={backHref}
-        className="pointer-events-auto flex items-center gap-2 font-mono text-[0.6rem] tracking-widest uppercase text-white/50 hover:text-white transition-colors bg-black/30 backdrop-blur-md px-4 py-2 rounded-full border border-white/10"
+        className="pointer-events-auto flex items-center gap-2 font-mono text-[0.6rem] tracking-widest uppercase text-[color:var(--muted)] hover:text-foreground transition-colors bg-[color:var(--overlay-soft)] backdrop-blur-md px-4 py-2 rounded-full border border-[color:var(--border)]"
       >
         <ArrowLeft className="w-3 h-3" /> {backLabel}
       </Link>
-      <div className="pointer-events-auto bg-black/30 backdrop-blur-md rounded-full border border-white/10 p-1">
+      <div className="pointer-events-auto bg-[color:var(--overlay-soft)] backdrop-blur-md rounded-full border border-[color:var(--border)] p-1">
         <ThemeToggle />
       </div>
     </nav>

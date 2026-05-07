@@ -22,8 +22,8 @@ export function CategoryNav({ categories, activeCategoryId, onSelect }: Category
           <span className={cn(
             "absolute right-8 mr-4 text-xs font-mono uppercase tracking-widest transition-all duration-300",
             activeCategoryId === category.id 
-              ? "opacity-100 translate-x-0 text-white" 
-              : "opacity-0 translate-x-4 text-white/50 group-hover:opacity-100 group-hover:translate-x-0"
+              ? "opacity-100 translate-x-0 text-foreground"
+              : "opacity-0 translate-x-4 text-[color:var(--muted)] group-hover:opacity-100 group-hover:translate-x-0"
           )}>
             {category.title}
           </span>
@@ -33,7 +33,7 @@ export function CategoryNav({ categories, activeCategoryId, onSelect }: Category
             "w-2 h-2 rounded-full transition-all duration-500",
             activeCategoryId === category.id 
               ? "bg-brand-300 scale-150 shadow-[0_0_10px_rgba(255,255,255,0.5)]" 
-              : "bg-white/20 hover:bg-white/50"
+              : "bg-[color:var(--muted)] hover:bg-foreground/60"
           )} />
         </button>
       ))}

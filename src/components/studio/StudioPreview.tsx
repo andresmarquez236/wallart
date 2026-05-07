@@ -55,7 +55,8 @@ function renderSlices(imageUrl: string, format: FormatId) {
           key={i}
           className={cn("relative overflow-hidden rounded-sm shadow-[6px_18px_36px_rgba(0,0,0,0.7)] flex-shrink-0 transition-all duration-700", s.w, s.h)}
         >
-          {/* Native img with object-position for slicing — works with data: URLs */}
+          {/* Native img with object-position for slicing works with data URLs. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={imageUrl}
             alt=""
@@ -95,7 +96,7 @@ export function StudioPreview({
   ];
 
   return (
-    <div className="relative w-full h-full flex flex-col overflow-hidden bg-[#050505] group">
+    <div className="relative w-full h-full flex flex-col overflow-hidden bg-[color:var(--surface)] group">
 
       {/* Background crossfade */}
       <div className="absolute inset-0 z-0">
@@ -105,12 +106,12 @@ export function StudioPreview({
           </div>
         ))}
         {/* Vignette */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[color:var(--overlay-strong)] via-transparent to-[color:var(--overlay-strong)] z-10" />
       </div>
 
       {/* Header label */}
       <div className="relative z-20 px-8 pt-6 flex-shrink-0">
-        <span className="font-mono text-[0.55rem] tracking-[0.3em] uppercase text-white/30">
+        <span className="font-mono text-[0.55rem] tracking-[0.3em] uppercase text-[color:var(--muted)]">
           Vista Previa en Vivo
         </span>
       </div>
@@ -127,14 +128,14 @@ export function StudioPreview({
           )}>
             {renderSlices(activeImage, activeFormat)}
             {/* Reflection / shadow on floor */}
-            <div className="absolute -bottom-4 left-0 right-0 h-8 bg-gradient-to-b from-black/20 to-transparent blur-sm" />
+            <div className="absolute -bottom-4 left-0 right-0 h-8 bg-gradient-to-b from-[color:var(--overlay-soft)] to-transparent blur-sm" />
           </div>
         ) : (
           <div className="text-center">
-            <div className="w-24 h-24 border border-dashed border-white/15 flex items-center justify-center mx-auto mb-4 rounded-sm">
-              <span className="text-white/20 text-3xl">+</span>
+            <div className="w-24 h-24 border border-dashed border-[color:var(--border)] flex items-center justify-center mx-auto mb-4 rounded-sm">
+              <span className="text-[color:var(--muted)] text-3xl">+</span>
             </div>
-            <p className="font-mono text-[0.6rem] text-white/25 tracking-widest uppercase">
+            <p className="font-mono text-[0.6rem] text-[color:var(--muted)] tracking-widest uppercase">
               Tu arte aparecerá aquí
             </p>
           </div>
@@ -146,7 +147,7 @@ export function StudioPreview({
         
         {/* Format Pills */}
         <div className="flex items-center gap-4">
-          <span className="font-mono text-[0.5rem] text-white/30 tracking-widest uppercase w-14 flex-shrink-0">Formato</span>
+          <span className="font-mono text-[0.5rem] text-[color:var(--muted)] tracking-widest uppercase w-14 flex-shrink-0">Formato</span>
           <div className="flex gap-2 flex-wrap">
             {formats.map(({ id, label }) => (
               <button
@@ -155,8 +156,8 @@ export function StudioPreview({
                 className={cn(
                   "px-4 py-1.5 rounded-full border text-[0.65rem] font-light tracking-wide transition-all duration-200",
                   activeFormat === id
-                    ? "border-white text-white bg-white/10"
-                    : "border-white/20 text-white/40 hover:border-white/50 hover:text-white/70"
+                    ? "border-foreground text-foreground bg-foreground/10"
+                    : "border-[color:var(--border)] text-[color:var(--muted)] hover:border-[color:var(--border-strong)] hover:text-foreground"
                 )}
               >
                 {label}
@@ -167,7 +168,7 @@ export function StudioPreview({
 
         {/* Size Pills */}
         <div className="flex items-center gap-4">
-          <span className="font-mono text-[0.5rem] text-white/30 tracking-widest uppercase w-14 flex-shrink-0">Tamaño</span>
+          <span className="font-mono text-[0.5rem] text-[color:var(--muted)] tracking-widest uppercase w-14 flex-shrink-0">Tamaño</span>
           <div className="flex gap-2 flex-wrap">
             {SIZES[activeFormat].map((s) => (
               <button
@@ -176,8 +177,8 @@ export function StudioPreview({
                 className={cn(
                   "px-4 py-1.5 rounded-full border text-[0.65rem] font-light tracking-wide transition-all duration-200",
                   activeSize === s
-                    ? "border-white text-white bg-white/10"
-                    : "border-white/20 text-white/40 hover:border-white/50 hover:text-white/70"
+                    ? "border-foreground text-foreground bg-foreground/10"
+                    : "border-[color:var(--border)] text-[color:var(--muted)] hover:border-[color:var(--border-strong)] hover:text-foreground"
                 )}
               >
                 {s}
@@ -187,7 +188,7 @@ export function StudioPreview({
         </div>
 
         {/* Divider + CTA */}
-        <div className="flex items-center justify-between pt-2 border-t border-white/8">
+        <div className="flex items-center justify-between pt-2 border-t border-[color:var(--border)]">
           {/* BG Switcher */}
           <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             {BACKGROUNDS.map((bg) => (
@@ -196,7 +197,7 @@ export function StudioPreview({
                 onClick={() => onBgChange(bg)}
                 className={cn(
                   "relative w-8 h-8 rounded-full overflow-hidden border-2 transition-all duration-300",
-                  activeBg === bg ? "border-white scale-110" : "border-transparent opacity-50 hover:opacity-100"
+                  activeBg === bg ? "border-foreground scale-110" : "border-transparent opacity-50 hover:opacity-100"
                 )}
               >
                 <Image src={bg} alt="Fondo" fill className="object-cover" />
@@ -208,7 +209,7 @@ export function StudioPreview({
           {activeImage && (
             <button
               onClick={onCheckout}
-              className="flex items-center gap-2 bg-white text-black px-6 py-2.5 rounded-full text-xs font-bold tracking-widest uppercase hover:bg-white/90 transition-all"
+              className="flex items-center gap-2 bg-foreground text-background px-6 py-2.5 rounded-full text-xs font-bold tracking-widest uppercase hover:opacity-85 transition-all"
             >
               <ShoppingCart className="w-3.5 h-3.5" />
               Convertir en Arte Real

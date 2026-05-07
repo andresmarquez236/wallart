@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Category, FormatType } from "@/lib/catalog-data";
 import { cn } from "@/lib/utils";
@@ -12,20 +11,9 @@ interface MasterRoomProps {
 }
 
 export function MasterRoom({ categories, activeCategoryId, activeArtworkId }: MasterRoomProps) {
-  const [currentFormat, setCurrentFormat] = useState<FormatType>("one-piece");
-  const [bgImages, setBgImages] = useState<{ id: string, url: string }[]>([]);
-
-  // Collect background images
-  useEffect(() => {
-    setBgImages(categories.map(c => ({ id: c.id, url: c.roomImage })));
-  }, [categories]);
-
   const activeCategory = categories.find(c => c.id === activeCategoryId) || categories[0];
-  const activeArtwork = activeCategory.artworks.find(a => a.id === activeArtworkId) || activeCategory.artworks[0];
-
-  useEffect(() => {
-    setCurrentFormat(activeCategory.id as FormatType);
-  }, [activeCategoryId, activeCategory.id]);
+  const currentFormat = activeCategory.id as FormatType;
+  const bgImages = categories.map(c => ({ id: c.id, url: c.roomImage }));
 
   const renderSlices = (imageUrl: string, format: FormatType) => {
     let slices: Array<{ width: string; height: string; bgPos: string }> = [];
@@ -76,7 +64,7 @@ export function MasterRoom({ categories, activeCategoryId, activeArtworkId }: Ma
   };
 
   return (
-    <div className="absolute inset-0 w-full h-full overflow-hidden bg-[#0a0a0a]">
+    <div className="absolute inset-0 w-full h-full overflow-hidden bg-background">
       {/* Background Rooms Crossfade */}
       <div className="absolute inset-0 z-0">
         {bgImages.map((bg) => (
@@ -97,7 +85,7 @@ export function MasterRoom({ categories, activeCategoryId, activeArtworkId }: Ma
           </div>
         ))}
         {/* Dark Editorial Gradient Map */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/90 via-[#0a0a0a]/60 to-[#0a0a0a] z-10" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[color:var(--overlay-strong)] via-[color:var(--overlay-soft)] to-background z-10" />
       </div>
 
       {/* Center Wall Art Projection */}
@@ -117,7 +105,7 @@ export function MasterRoom({ categories, activeCategoryId, activeArtworkId }: Ma
                 art.id === activeArtworkId ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"
               )}
             >
-              {renderSlices(art.image, activeCategory.id as FormatType)}
+              {renderSlices(art.image, currentFormat)}
             </div>
           ))}
           {/* Subtle Glow */}

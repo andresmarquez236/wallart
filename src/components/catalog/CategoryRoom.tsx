@@ -99,7 +99,7 @@ export function CategoryRoom({ category, isActive }: CategoryRoomProps) {
   };
 
   return (
-    <div ref={containerRef} className="relative w-full h-screen bg-[#0a0a0a] overflow-hidden">
+    <div ref={containerRef} className="relative w-full h-screen bg-background overflow-hidden">
       {/* Background Room */}
       <div className="absolute inset-0 z-0">
         <Image 
@@ -109,7 +109,7 @@ export function CategoryRoom({ category, isActive }: CategoryRoomProps) {
           className="object-cover opacity-50"
           onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#111]/80 to-[#050505] -z-10" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[color:var(--overlay-strong)] to-[color:var(--surface)] -z-10" />
       </div>
 
       {/* Art Projection Area */}
@@ -148,17 +148,17 @@ export function CategoryRoom({ category, isActive }: CategoryRoomProps) {
            <h4 className="text-brand-400 font-mono text-[0.6rem] md:text-xs tracking-[0.3em] uppercase mb-2">
              Formato: {category.title}
            </h4>
-           <h2 className="text-3xl md:text-5xl font-serif text-white tracking-wide">
+           <h2 className="text-3xl md:text-5xl font-serif text-foreground tracking-wide">
              {activeArt?.title}
            </h2>
-           <p className="text-white/60 font-light mt-2 md:mt-4 max-w-sm text-sm md:text-base">
+           <p className="text-[color:var(--foreground-soft)] font-light mt-2 md:mt-4 max-w-sm text-sm md:text-base">
              {activeArt?.description}
            </p>
-           <p className="text-xl md:text-2xl font-light text-white mt-4">
+           <p className="text-xl md:text-2xl font-light text-foreground mt-4">
              ${activeArt?.price}
            </p>
            
-           <button className="mt-6 flex items-center gap-2 bg-white text-black px-6 py-3 rounded-none font-bold uppercase tracking-widest text-[0.6rem] md:text-xs hover:bg-brand-200 transition-colors">
+           <button className="mt-6 flex items-center gap-2 bg-foreground text-background px-6 py-3 rounded-none font-bold uppercase tracking-widest text-[0.6rem] md:text-xs hover:bg-brand-200 transition-colors">
              <ShoppingCart className="w-4 h-4" /> Añadir
            </button>
         </div>
@@ -169,8 +169,8 @@ export function CategoryRoom({ category, isActive }: CategoryRoomProps) {
             <button
               key={art.id}
               className={cn(
-                "relative w-16 h-16 md:w-24 md:h-24 border border-white/20 overflow-hidden transition-all duration-300 hover:scale-105 hover:border-white",
-                idx === activeIndex ? "border-white scale-105 opacity-100" : "opacity-40 grayscale"
+                "relative w-16 h-16 md:w-24 md:h-24 border border-[color:var(--border)] overflow-hidden transition-all duration-300 hover:scale-105 hover:border-foreground",
+                idx === activeIndex ? "border-foreground scale-105 opacity-100" : "opacity-40 grayscale"
               )}
             >
               <Image src={art.image} alt={art.title} fill className="object-cover" />

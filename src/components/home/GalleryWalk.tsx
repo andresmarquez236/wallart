@@ -3,18 +3,19 @@
 import { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { cn } from "@/lib/utils";
+import { useTheme } from "@/components/theme/ThemeProvider";
 
 import Image from "next/image";
 
 const styles = [
-  { id: "abstract", title: "Abstracto", color: "#1a1a1a", image: "/assets/gallery-1-v2.png" },
-  { id: "minimalist", title: "Minimalista", color: "#0a0a0a", image: "/assets/gallery-2-v2.png" },
-  { id: "photography", title: "Fotografía", color: "#2d3748", image: "/assets/gallery-3-v2.png" },
-  { id: "classic", title: "Clásico", color: "#4a5568", image: "/assets/gallery-4-v2.png" },
+  { id: "abstract", title: "Abstracto", dark: "#161c27", light: "#e8eef8", image: "/assets/muestra_3.jpeg" },
+  { id: "minimalist", title: "Minimalista", dark: "#111722", light: "#edf2fb", image: "/assets/muestra_4.png" },
+  { id: "photography", title: "Fotografía", dark: "#1a2432", light: "#dde8f7", image: "/assets/muestra_5.png" },
+  { id: "classic", title: "Clásico", dark: "#252f40", light: "#dbe3f0", image: "/assets/muestra_6.png" },
 ];
 
 export function GalleryWalk() {
+  const { theme } = useTheme();
   const container = useRef<HTMLDivElement>(null);
   const wrapper = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
@@ -49,33 +50,37 @@ export function GalleryWalk() {
           containerAnimation: scrollTween,
           start: "left center",
           end: "right center",
-          onEnter: () => gsap.to(bgRef.current, { backgroundColor: styles[i].color, duration: 0.5 }),
-          onEnterBack: () => gsap.to(bgRef.current, { backgroundColor: styles[i].color, duration: 0.5 }),
+          onEnter: () => gsap.to(bgRef.current, { backgroundColor: styles[i][theme], duration: 0.5 }),
+          onEnterBack: () => gsap.to(bgRef.current, { backgroundColor: styles[i][theme], duration: 0.5 }),
         });
       });
 
     }, container);
 
     return () => ctx.revert();
-  }, []);
+  }, [theme]);
 
   return (
     <section ref={container} className="relative h-screen w-full overflow-hidden">
       {/* Dynamic Background */}
-      <div ref={bgRef} className="absolute inset-0 bg-[#1a1a1a] transition-colors duration-500 ease-in-out" />
+      <div
+        ref={bgRef}
+        className="absolute inset-0 transition-colors duration-500 ease-in-out"
+        style={{ backgroundColor: styles[0][theme] }}
+      />
       
       {/* Horizontal Scroll Wrapper */}
       <div ref={wrapper} className="absolute top-0 left-0 h-full flex w-[400vw]">
-        {styles.map((style, i) => (
+        {styles.map((style) => (
           <div 
             key={style.id} 
             className="gallery-panel relative w-screen h-full flex flex-col items-center justify-center p-8 lg:p-24"
           >
-            <div className="relative w-[85vw] md:w-[60vw] max-w-5xl aspect-video flex items-center justify-center shadow-[10px_20px_40px_rgba(0,0,0,0.6)] drop-shadow-2xl overflow-hidden bg-[#0a0a0a] rounded-sm transform transition-transform hover:scale-[1.02] duration-500">
+            <div className="relative w-[85vw] md:w-[60vw] max-w-5xl aspect-video flex items-center justify-center shadow-[10px_20px_40px_var(--shadow-color)] overflow-hidden bg-[color:var(--surface)] rounded-sm transform transition-transform hover:scale-[1.02] duration-500">
                <Image src={style.image} alt={style.title} fill className="object-cover opacity-90" />
                <div className="absolute inset-0 bg-gradient-to-tr from-white/5 via-transparent to-white/10 mix-blend-overlay" />
             </div>
-            <h3 className="mt-12 text-5xl md:text-7xl font-serif text-white/90 italic tracking-tight mix-blend-difference">
+            <h3 className="mt-12 text-5xl md:text-7xl font-serif text-foreground italic tracking-tight">
               {style.title}
             </h3>
           </div>

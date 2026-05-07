@@ -23,7 +23,7 @@ export default function Home() {
       <Decision />
 
       {/* Footer Placeholder */}
-      <footer className="h-48 bg-brand-900 w-full flex flex-col items-center justify-center text-brand-100/30 font-mono text-xs tracking-widest uppercase relative z-10 border-t border-white/5">
+      <footer className="h-48 bg-[color:var(--surface)] w-full flex flex-col items-center justify-center text-[color:var(--muted)] font-mono text-xs tracking-widest uppercase relative z-10 border-t border-[color:var(--border)]">
         <p>Wall Art Studio © 2026</p>
         <p className="mt-2">MIT Level Experience</p>
       </footer>

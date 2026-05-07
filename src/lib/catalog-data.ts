@@ -4,9 +4,44 @@ export interface Artwork {
   description: string;
   image: string;
   price: number;
+  themes: ArtworkTheme[];
 }
 
 export type FormatType = "one-piece" | "triptych" | "five-piece";
+export type ArtworkTheme =
+  | "animals"
+  | "religious"
+  | "abstract"
+  | "money"
+  | "landscapes"
+  | "series-movies"
+  | "anime"
+  | "cities"
+  | "sculptures"
+  | "sports"
+  | "characters"
+  | "video-games"
+  | "music"
+  | "custom"
+  | "textured";
+
+export const CATALOG_THEMES: Array<{ id: ArtworkTheme; label: string }> = [
+  { id: "animals", label: "Animales" },
+  { id: "religious", label: "Religiosos" },
+  { id: "abstract", label: "Abstractos" },
+  { id: "money", label: "Dinero" },
+  { id: "landscapes", label: "Paisajes" },
+  { id: "series-movies", label: "Series y Películas" },
+  { id: "anime", label: "Anime" },
+  { id: "cities", label: "Ciudades" },
+  { id: "sculptures", label: "Esculturas" },
+  { id: "sports", label: "Deportes" },
+  { id: "characters", label: "Personajes" },
+  { id: "video-games", label: "Video Juegos" },
+  { id: "music", label: "Música" },
+  { id: "custom", label: "Personalizados" },
+  { id: "textured", label: "Cuadros con Textura" },
+];
 
 export interface Category {
   id: FormatType;
@@ -23,9 +58,9 @@ export const CATALOG_DATA: Category[] = [
     description: "Formatos inmersivos de alto impacto para un enfoque minimalista.",
     roomImage: "/assets/room-onepiece.png", 
     artworks: [
-      { id: "op-1", title: "Monochrome Heights", description: "Rascacielos en claroscuro brutalista.", image: "/assets/gallery-3-v2.png", price: 299 },
-      { id: "op-2", title: "Wabi Sabi Enso", description: "Círculo zen imperfecto sobre lino.", image: "/assets/gallery-2-v2.png", price: 249 },
-      { id: "op-3", title: "Caravaggio Light", description: "Claroscuro hiperrealista contemporáneo.", image: "/assets/gallery-4-v2.png", price: 420 },
+      { id: "op-1", title: "Obsidian Geometry", description: "Arquitectura abstracta en escala monumental.", image: "/assets/muestra_6.png", price: 299, themes: ["cities", "abstract"] },
+      { id: "op-2", title: "Silent Texture", description: "Materia visual sobria con presencia de galería.", image: "/assets/muestra_5.png", price: 249, themes: ["abstract", "textured"] },
+      { id: "op-3", title: "Concrete Bloom", description: "Contraste botánico con atmósfera editorial.", image: "/assets/muestra_4.png", price: 420, themes: ["religious", "sculptures"] },
     ]
   },
   {
@@ -34,9 +69,9 @@ export const CATALOG_DATA: Category[] = [
     description: "Tres lienzos que expanden la narrativa visual.",
     roomImage: "/assets/room-triptych.png", 
     artworks: [
-      { id: "tr-1", title: "Urban Shadow", description: "Calles oscuras de alto contraste.", image: "/assets/gallery-3-v2.png", price: 450 },
-      { id: "tr-2", title: "Crimson Depth", description: "Abstracción geométrica en rojo profundo.", image: "/assets/gallery-1-v2.png", price: 420 },
-      { id: "tr-3", title: "Dark Roses", description: "Bodegón barroco en sombras.", image: "/assets/gallery-4-v2.png", price: 480 },
+      { id: "tr-1", title: "Monolith Sequence", description: "Ritmo arquitectónico para espacios amplios.", image: "/assets/muestra_3.jpeg", price: 450, themes: ["cities", "landscapes"] },
+      { id: "tr-2", title: "Museum Trace", description: "Gesto abstracto sobre textura cálida.", image: "/assets/muestra_2.jpeg", price: 420, themes: ["abstract", "music"] },
+      { id: "tr-3", title: "Nocturne Garden", description: "Naturaleza oscura con tensión cinematográfica.", image: "/assets/muestra_1.jpeg", price: 480, themes: ["textured", "sculptures"] },
     ]
   },
   {
@@ -45,9 +80,9 @@ export const CATALOG_DATA: Category[] = [
     description: "Arreglos monumentales que transforman todo el espacio.",
     roomImage: "/assets/room-fivepiece.png", 
     artworks: [
-      { id: "fp-1", title: "Ethereal Smoke", description: "Humo de neón sobre fondo obsidiana.", image: "/assets/gallery-1-v2.png", price: 650 },
-      { id: "fp-2", title: "Golden Veins", description: "Fluidos oscuros con oro líquido.", image: "/assets/art-v4.png", price: 720 },
-      { id: "fp-3", title: "Negative Space", description: "Composición minimalista extendida.", image: "/assets/gallery-2-v2.png", price: 600 },
+      { id: "fp-1", title: "Editorial Tension", description: "Composición vertical para presencia dominante.", image: "/assets/muestra_6.png", price: 650, themes: ["video-games", "anime"] },
+      { id: "fp-2", title: "Golden Silence", description: "Textura oscura con acentos de lujo contenido.", image: "/assets/muestra_5.png", price: 720, themes: ["money", "abstract"] },
+      { id: "fp-3", title: "Gallery Field", description: "Paisaje abstracto de alto impacto visual.", image: "/assets/muestra_4.png", price: 600, themes: ["custom", "sports"] },
     ]
   }
 ];

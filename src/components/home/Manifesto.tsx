@@ -43,14 +43,14 @@ export function Manifesto() {
   return (
     <section 
       ref={container}
-      className="relative min-h-[80vh] w-full flex items-center justify-center bg-[#0a0a0a] px-6 py-32"
+      className="relative min-h-[80vh] w-full flex items-center justify-center bg-background px-6 py-32"
     >
       <div className="max-w-5xl mx-auto">
         <p 
           ref={textRef}
-          className="text-4xl md:text-6xl lg:text-7xl font-serif text-white leading-tight md:leading-tight"
+          className="text-4xl md:text-6xl lg:text-7xl font-serif text-foreground leading-tight md:leading-tight"
         >
-          No vendemos <span className="italic text-white/50">impresiones</span>. <br />
+          No vendemos <span className="italic text-[color:var(--muted)]">impresiones</span>. <br />
           Creamos piezas visuales que transforman <span className="font-sans font-bold tracking-tighter">paredes</span>, espacios y <span className="italic">recuerdos</span> en <span className="underline decoration-1 underline-offset-8">arte</span>.
         </p>
       </div>

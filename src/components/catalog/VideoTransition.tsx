@@ -42,12 +42,12 @@ export function VideoTransition({ videoSrc }: VideoTransitionProps) {
   return (
     <section 
       ref={container}
-      className="relative w-full h-[200vh] bg-black"
+      className="relative w-full h-[200vh] bg-background"
     >
       <div className="sticky top-0 w-full h-screen overflow-hidden flex items-center justify-center">
         {/* We use a subtle text fallback in case video is missing/loading */}
         <div className="absolute inset-0 flex items-center justify-center -z-10">
-          <p className="text-white/20 font-mono tracking-widest text-xs uppercase">
+          <p className="text-[color:var(--muted)] font-mono tracking-widest text-xs uppercase">
             Avanzando a la siguiente sala...
           </p>
         </div>
